@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>YourFit Order Confirmation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background-color: #4f46e5;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      border-radius: 5px 5px 0 0;
+    }
+    .content {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 5px 5px;
+    }
+    .order-details {
+      background-color: #f9fafb;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f1f5f9;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .button {
+      display: inline-block;
+      background-color: #4f46e5;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Your Order is Confirmed!</h1>
+    </div>
+    <div class="content">
+      <p>Hello {{to_name}},</p>
+      <p>Thank you for your order from YourFit! We're excited to get your premium fitness apparel to you as soon as possible.</p>
+      
+      <div class="order-details">
+        <h2>Order Summary</h2>
+        <p><strong>Order ID:</strong> {{order_id}}</p>
+        <p><strong>Order Date:</strong> {{order_date}}</p>
+        <p><strong>Order Status:</strong> {{order_status}}</p>
+        
+        <h3>Product Details</h3>
+        <table>
+          <tr>
+            <th>Product</th>
+            <th>Size</th>
+            <th>Qty</th>
+            <th>Price</th>
+          </tr>
+          <tr>
+            <td>{{product_name}}</td>
+            <td>{{product_size}}</td>
+            <td>{{product_quantity}}</td>
+            <td>${{product_price}}</td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
+            <td><strong>${{total_price}}</strong></td>
+          </tr>
+        </table>
+        
+        <h3>Shipping Information</h3>
+        <p>{{shipping_address}}</p>
+      </div>
+      
+      <p>We will send you another email when your order ships with tracking information.</p>
+      
+      <p>If you have any questions about your order, please reply to this email or contact our customer support team.</p>
+      
+      <p>Thank you for shopping with YourFit!</p>
+      
+      <p>Best regards,<br>
+      The YourFit Team</p>
+      
+      <div class="footer">
+        <p>© 2025 YourFit - Your Premium Fitness Apparel Store</p>
+        <p>This email was sent to {{to_email}}</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html> 

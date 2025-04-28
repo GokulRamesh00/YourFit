@@ -1,0 +1,32 @@
+Your Order is Confirmed!
+
+Hello {{to_name}},
+
+Thank you for your order from YourFit! We're excited to get your premium fitness apparel to you as soon as possible.
+
+ORDER SUMMARY
+Order ID: {{order_id}}
+Order Date: {{order_date}}
+Order Status: {{order_status}}
+
+PRODUCT DETAILS
+Product: {{product_name}}
+Size: {{product_size}}
+Quantity: {{product_quantity}}
+Price: ${{product_price}}
+Total: ${{total_price}}
+
+SHIPPING INFORMATION
+{{shipping_address}}
+
+We will send you another email when your order ships with tracking information.
+
+If you have any questions about your order, please reply to this email or contact our customer support team.
+
+Thank you for shopping with YourFit!
+
+Best regards,
+The YourFit Team
+
+© 2025 YourFit - Your Premium Fitness Apparel Store
+This email was sent to {{to_email}} 

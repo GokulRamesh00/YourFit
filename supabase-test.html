@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supabase API Key Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #3ECF8E;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    input {
+      padding: 8px;
+      width: 100%;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 5px;
+      overflow: auto;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Supabase API Key Test</h1>
+  
+  <div class="container">
+    <h2>Connection Details</h2>
+    <p>URL: <input type="text" id="supabaseUrl" value="https://qjocmhjdvthpnphkstja.supabase.co"></p>
+    <p>API Key: <input type="text" id="supabaseKey" placeholder="Enter your anon key from Supabase"></p>
+    <button id="testConnection">Test Connection</button>
+  </div>
+  
+  <div class="container">
+    <h2>Results</h2>
+    <div id="results">
+      <p>Click "Test Connection" to check if your API key is valid.</p>
+    </div>
+  </div>
+  
+  <script>
+    document.getElementById('testConnection').addEventListener('click', async function() {
+      const resultsContainer = document.getElementById('results');
+      const url = document.getElementById('supabaseUrl').value.trim();
+      const key = document.getElementById('supabaseKey').value.trim();
+      
+      resultsContainer.innerHTML = '<p>Testing connection...</p>';
+      
+      if (!url || !key) {
+        resultsContainer.innerHTML = '<p class="error">Please provide both URL and API key.</p>';
+        return;
+      }
+      
+      try {
+        // Set up headers
+        const headers = {
+          'Content-Type': 'application/json',
+          'apikey': key,
+          'Authorization': `Bearer ${key}`
+        };
+        
+        // Test basic connection
+        resultsContainer.innerHTML = '<p>Step 1: Testing basic connection...</p>';
+        
+        const response = await fetch(`${url}/rest/v1/order_placed?select=count(*),id&limit=1`, {
+          method: 'GET',
+          headers
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`API returned ${response.status}: ${errorText}`);
+        }
+        
+        const data = await response.json();
+        
+        // Add successful result
+        resultsContainer.innerHTML = `
+          <p class="success">✅ Connection successful!</p>
+          <p>Response code: ${response.status}</p>
+          <p>Data received:</p>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+          <p>Your API key is valid. You can now use it in your application.</p>
+        `;
+      } catch (error) {
+        resultsContainer.innerHTML = `
+          <p class="error">❌ Connection failed: ${error.message}</p>
+          <p>Please check your API key and try again. You may need to:</p>
+          <ol>
+            <li>Go to <a href="https://app.supabase.com/project/qjocmhjdvthpnphkstja/settings/api" target="_blank">your Supabase project API settings</a></li>
+            <li>Copy the current anon key or generate a new one</li>
+            <li>Make sure you enable Row Level Security (RLS) and set appropriate policies</li>
+          </ol>
+        `;
+      }
+    });
+  </script>
+</body>
+</html> 

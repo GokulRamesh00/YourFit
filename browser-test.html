@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supabase Connection Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #3ecf8e;
+    }
+    button {
+      background-color: #3ecf8e;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #38b97c;
+    }
+    pre {
+      background-color: #f6f8fa;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .output {
+      margin-top: 20px;
+    }
+    .success {
+      color: #38b97c;
+    }
+    .error {
+      color: #e03e3e;
+    }
+  </style>
+</head>
+<body>
+  <h1>Supabase Connection Test</h1>
+  <p>This page will test your Supabase connection using both the anon key and service role key.</p>
+  
+  <button onclick="testAnonKey()">Test Anon Key</button>
+  <button onclick="testServiceKey()">Test Service Role Key</button>
+  
+  <div class="output">
+    <h3>Output:</h3>
+    <pre id="output">Click a button above to start testing...</pre>
+  </div>
+  
+  <script>
+    const supabaseUrl = 'https://qjocmhjdvthpnphkstja.supabase.co';
+    const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqb2NtaGpkdnRocG5waGtzdGphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ0MTQyNjYsImV4cCI6MjA1OTk5MDI2Nn0.6r49NMThhcBCo8IJjbsoX8p78ieFBDgzK8p-JHF3dJE';
+    const serviceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqb2NtaGpkdnRocG5waGtzdGphIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NDQxNDI2NiwiZXhwIjoyMDU5OTkwMjY2fQ.g4Q80VXDCGcgCWvFBSO8cjA-4W29lSv17QZ-fQHYxVY';
+    
+    const outputEl = document.getElementById('output');
+    
+    function log(message, isError = false) {
+      const className = isError ? 'error' : '';
+      outputEl.innerHTML += `<div class="${className}">${message}</div>`;
+      console.log(message);
+    }
+    
+    function clearOutput() {
+      outputEl.innerHTML = '';
+    }
+    
+    async function testConnection(keyType, key) {
+      clearOutput();
+      log(`Testing with ${keyType}...`);
+      log(`URL: ${supabaseUrl}`);
+      log(`Using key: ${key.substring(0, 12)}...${key.substring(key.length - 6)}`);
+      
+      const headers = {
+        'apikey': key,
+        'Authorization': `Bearer ${key}`
+      };
+      
+      try {
+        // Test SELECT
+        log('\nTesting SELECT query...');
+        const selectUrl = `${supabaseUrl}/rest/v1/order_placed?select=id&limit=1`;
+        const selectResponse = await fetch(selectUrl, { headers });
+        
+        if (selectResponse.ok) {
+          const data = await selectResponse.json();
+          log(`SELECT succeeded! Found ${data.length} records.`);
+          log(`Response: ${JSON.stringify(data, null, 2)}`);
+        } else {
+          const errorText = await selectResponse.text();
+          log(`SELECT failed with status ${selectResponse.status}`, true);
+          log(`Error: ${errorText}`, true);
+        }
+        
+        // Test INSERT
+        log('\nTesting INSERT query...');
+        const insertUrl = `${supabaseUrl}/rest/v1/order_placed`;
+        
+        const testRecord = {
+          user_id: 'browser_test',
+          user_name: 'Browser Test',
+          email: 'browser@test.com',
+          product: 'BROWSER_TEST',
+          price: 0.01,
+          size: 'TEST',
+          quantity: 1,
+          shipping_address: 'Browser Test'
+        };
+        
+        const insertResponse = await fetch(insertUrl, {
+          method: 'POST',
+          headers: {
+            ...headers,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(testRecord)
+        });
+        
+        if (insertResponse.ok) {
+          const data = await insertResponse.json();
+          log(`INSERT succeeded!`);
+          log(`New record: ${JSON.stringify(data, null, 2)}`);
+        } else {
+          const errorText = await insertResponse.text();
+          log(`INSERT failed with status ${insertResponse.status}`, true);
+          log(`Error: ${errorText}`, true);
+        }
+        
+        log('\nTest completed!');
+        
+      } catch (error) {
+        log(`Error during test: ${error.message}`, true);
+      }
+    }
+    
+    async function testAnonKey() {
+      await testConnection('anon key', anonKey);
+    }
+    
+    async function testServiceKey() {
+      await testConnection('service role key', serviceKey);
+    }
+  </script>
+</body>
+</html> 
